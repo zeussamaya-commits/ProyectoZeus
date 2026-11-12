@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="style.css" />
+    <title>Home | SanviPop</title>
+    <script type="module" src="src/index.ts"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="index.html">SanviPop</a>
+        <ul class="navbar-nav me-auto mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" href="index.html">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="add-product.html">New product</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="profile.html">My profile</a>
+          </li>
+        </ul>
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#" id="logout">Logout</a>
+          </li>
+        </ul>
+      </div>
+    </nav>
+
+    <div class="container">
+      <!--Opcional-->
+      <nav class="navbar navbar-light bg-light justify-content-between mt-3">
+        <form class="container-fluid d-flex flex-nowrap gap-2" id="searchForm">
+          <input
+            class="form-control flex-grow-1"
+            type="text"
+            name="search"
+            id="search"
+            placeholder="Search"
+            aria-label="Search"
+          />
+          <select class="form-select w-auto" name="order" id="order" aria-label="Sort by">
+            <option value="distance">Distance</option>
+            <option value="price">Price</option>
+            <option value="views">Views</option>
+          </select>
+          <button type="submit" class="btn btn-primary" aria-label="Search">
+            <i class="bi bi-search"></i>
+          </button>
+        </form>
+      </nav>
+
+      <div class="text-muted mt-2" id="filterInfo">
+        Showing all products. Sorted by distance.
+      </div>
+
+      <div
+        id="productsContainer"
+        class="mb-4 mt-4 row row-cols-1 row-cols-md-2 row-cols-xl-3 g-4"
+      ></div>
+
+      <div class="text-center mb-5">
+        <button type="button" class="btn btn-primary d-none" id="loadMore">
+          Load more products
+        </button>
+      </div>
+    </div>
+
+    <template id="productTemplate">
+      <div class="col">
+        <div class="card h-100 shadow-sm border-0">
+          <a href="" class="product-img-link d-block">
+            <img src="" class="card-img-top" alt="" /> <!-- Product's image -->
+          </a>
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+              <span class="badge bg-secondary-subtle text-secondary-emphasis border"><!-- Category name --></span>
+              <span class="fs-5 fw-bold text-success"><!-- Product's price --></span>
+            </div>
+            <h5 class="mb-2">
+              <a href="" class="card-title fw-semibold text-decoration-none"><!-- Product's title --></a>
+            </h5>
+            <p class="card-text text-muted small flex-grow-1"><!-- Product's description --></p>
+          </div>
+          <div class="card-footer bg-transparent text-muted">
+            <div class="row align-items-center">
+              <div class="col-auto avatar ps-1 pe-1">
+                <a href="" class="avatar-link">
+                  <img class="rounded-circle" src="" alt="" /> <!-- Seller's image -->
+                </a>
+              </div>
+              <div class="col">
+                <div>
+                  <a href="" class="name text-decoration-none"><!-- Seller's name --></a>
+                </div>
+                <div>
+                  <small class="text-muted"><!-- Product's datePublished --></small>
+                </div>
+              </div>
+              <div class="col-auto">
+                <!-- Delete button. Hide with d-none if necessary -->
+                <button class="btn btn-outline-danger btn-sm delete" title="Delete product">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </div>
+              <div class="col-auto text-muted text-end">
+                <div>
+                  <small><span class="views"><!-- Product's views --></span> <i class="bi bi-eye"></i></small>
+                </div>
+                <div><small class="distance"><!-- Product's distance--></small></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  </body>
+</html>
