@@ -7,18 +7,22 @@
     "build": "tsc && vite build",
     "preview": "vite preview",
     "start": "vite",
-    "eslint": "eslint src"
+    "test": "eslint src",
+    "prestart": "npm run format && npm run test",
+    "format": "prettier --write --cache --parser typescript \"src/**/*.ts\""
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "eslint": "^10.14.0",
     "globals": "^17.14.0",
     "jiti": "^2.7.0",
+    "prettier": "^3.10.1",
     "typescript": "~6.0",
     "typescript-eslint": "^8.72.1",
     "vite": "^8.3.6"
   },
   "dependencies": {
-    "bootstrap": "^5.3.8"
+    "bootstrap": "^5.3.8",
+    "ol": "^10.11.0"
   }
 }

@@ -4,40 +4,40 @@ import type { Rating } from "./rating";
 import type { User } from "./user";
 
 export interface CategoriesResponse {
-    categories: Category[];
+  categories: Category[];
 }
 
 export interface ProductsResponse {
-    products: Product[];
-    page: number;
-    total_pages: number;
-    total_products: number;
+  products: Product[];
+  page: number;
+  total_pages: number;
+  total_products: number;
 }
 
 export interface SingleProductResponse {
-    product: Product;
+  product: Product;
 }
 
 export interface TokenResponse {
-    accessToken: string;
+  accessToken: string;
 }
 
 export interface UserResponse {
-    user: User;
+  user: User;
 }
 
 export interface UsersResponse {
-    users: User[];
+  users: User[];
 }
 
 export interface PhotoResponse {
-    photo: string;
+  photo: string;
 }
 
 export interface RatingsResponse {
-    ratings: Rating[];
+  ratings: Rating[];
 }
 
 export interface SingleRatingResponse {
-    rating: Rating;
+  rating: Rating;
 }
