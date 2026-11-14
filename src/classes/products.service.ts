@@ -1,7 +1,7 @@
 import { SERVER } from "../constants.ts";
-import { Http } from "./http.class.ts";
-import { type ProductsResponse, type Product, type SingleProductResponse } from "../interfaces/product.ts";
-import { type ProductPost } from "../interfaces/product.ts";
+import { Http } from "./http.ts";
+import { type Product, type ProductInsert} from "../interfaces/product.ts";
+import { type ProductsResponse, type SingleProductResponse } from "../interfaces/responses.ts";
 
 export class ProductsService {
 
@@ -12,8 +12,8 @@ export class ProductsService {
         return resp.products;
     }
 
-    async post(product: ProductPost) : Promise<Product> {
-        const resp = await this.#http.post<SingleProductResponse, ProductPost>(`${SERVER}/products`, product);
+    async post(product: ProductInsert) : Promise<Product> {
+        const resp = await this.#http.post<SingleProductResponse, ProductInsert>(`${SERVER}/products`, product);
         return resp.product;
     }
 

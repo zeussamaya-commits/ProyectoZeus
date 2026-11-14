@@ -1,6 +1,6 @@
 import { CategoriesService } from "./classes/categories.service.ts";
 import { ProductsService } from "./classes/products.service.ts";
-import type { ProductPost } from "./interfaces/product.ts";
+import type { ProductInsert } from "./interfaces/product.ts";
 
 const categoriesService = new CategoriesService();
 const productsService = new ProductsService();
@@ -58,7 +58,7 @@ imageInput.addEventListener("change", () => {
 newProductForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const product: ProductPost = {
+    const product: ProductInsert = {
         title: (document.getElementById("title")as HTMLInputElement).value.trim(),
         description: (document.getElementById("description") as HTMLTextAreaElement).value.trim(),
         price: Number((document.getElementById("price") as HTMLInputElement).value),

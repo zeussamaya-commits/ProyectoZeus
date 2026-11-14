@@ -1,7 +1,8 @@
 
 import { SERVER } from "../constants.ts";
-import { Http } from "./http.class.ts";
-import { type CategoriesResponse, type Category } from "../interfaces/category.ts";
+import { Http } from "./http.ts";
+import type { Category } from "../interfaces/category.ts";
+import { type CategoriesResponse} from "../interfaces/responses.ts";
 
 export class CategoriesService {
 
