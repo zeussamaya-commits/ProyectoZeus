@@ -3,12 +3,11 @@ import { type Product } from "./interfaces/product.ts";
 
 const productsService = new ProductsService();
 const productsContainer = document.getElementById(
-  "products-container"
+  "productsContainer"
 ) as HTMLDivElement;
 const productTemplate = document.getElementById(
-  "product-template"
+  "productTemplate"
 ) as HTMLTemplateElement;
-const searchInput = document.getElementById("search") as HTMLInputElement;
 
 let products: Product[] = [];
 
@@ -25,12 +24,12 @@ function createCard(product: Product): HTMLDivElement {
     product.title;
   (card.querySelector(".card-text") as HTMLElement).textContent =
     product.description;
-  (card.querySelector(".category") as HTMLElement).textContent =
+  (card.querySelector(".badge") as HTMLElement).textContent =
     product.category.name;
-  (card.querySelector(".price") as HTMLElement).textContent =
+  (card.querySelector(".text-success") as HTMLElement).textContent =
     `${product.price} euros`;
 
-  card.querySelector(".btn-delete")?.addEventListener("click", async () => {
+  card.querySelector(".delete")?.addEventListener("click", async () => {
     if (!confirm(`¿Seguro que quieres borrar "${product.title}"?`)) {
       return;
     }
@@ -47,6 +46,19 @@ function createCard(product: Product): HTMLDivElement {
     }
   });
 
+  new Intl.NumberFormat("es-ES", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(product.distance);
+
+  new Intl.DateTimeFormat("es-ES", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(product.datePublished));
+
   return card;
 }
 
@@ -59,7 +71,8 @@ function showProducts(productsToShow: Product[]): void {
 
 async function loadProducts(): Promise<void> {
   try {
-    products = await productsService.getAll();
+    const resp = await productsService.getAll(1, "", "distance");
+    products = resp.products;
     showProducts(products);
   } catch {
     alert("no se han cargado los productos");
@@ -67,15 +80,3 @@ async function loadProducts(): Promise<void> {
 }
 
 loadProducts();
-
-searchInput.addEventListener("input", () => {
-  const text = searchInput.value.trim().toLowerCase();
-
-  const filtered = products.filter(
-    product =>
-      product.title.toLowerCase().includes(text) ||
-      product.description.toLowerCase().includes(text)
-  );
-
-  showProducts(filtered);
-});

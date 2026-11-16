@@ -9,9 +9,15 @@ import {
 export class ProductsService {
   #http = new Http();
 
-  async getAll(): Promise<Product[]> {
-    const resp = await this.#http.get<ProductsResponse>(`${SERVER}/products`);
-    return resp.products;
+  async getAll(
+    page: number,
+    search: string,
+    sort: string
+  ): Promise<ProductsResponse> {
+    const params = new URLSearchParams({ page: String(page), search, sort });
+    return await this.#http.get<ProductsResponse>(
+      `${SERVER}/products?${params.toString()}`
+    );
   }
 
   async post(product: ProductInsert): Promise<Product> {
