@@ -1,6 +1,7 @@
 import { SERVER } from "../constants.ts";
 import { Http } from "./http.ts";
 import { type LoginData } from "../interfaces/user.ts";
+import { type RegisterData } from "../interfaces/user.ts";
 import { type TokenResponse } from "../interfaces/responses.ts";
 
 export class AuthService {
@@ -12,5 +13,12 @@ export class AuthService {
       userLogin
     );
     localStorage.setItem("token", resp.accessToken);
+  }
+
+  async register(userInfo: RegisterData): Promise<void> {
+    await this.#http.post<void, RegisterData>(
+      `${SERVER}/auth/register`,
+      userInfo
+    );
   }
 }
