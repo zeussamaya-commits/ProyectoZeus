@@ -9,7 +9,9 @@ const productTemplate = document.getElementById(
   "productTemplate"
 ) as HTMLTemplateElement;
 
-let products: Product[] = [];
+let page = 1;
+let search = "";
+let sort = "distance";
 
 const distanceFormat = new Intl.NumberFormat("es-ES", {
   minimumFractionDigits: 2,
@@ -24,6 +26,12 @@ const dateFormat = new Intl.DateTimeFormat("es-ES", {
   minute: "2-digit",
 });
 
+const searchForm = document.getElementById("searchForm") as HTMLFormElement;
+const searchInput = document.getElementById("search") as HTMLInputElement;
+const order = document.getElementById("order") as HTMLSelectElement;
+
+const filterInfo = document.getElementById("filterInfo") as HTMLDivElement;
+
 function createCard(product: Product): HTMLDivElement {
   const card = productTemplate.content.firstElementChild?.cloneNode(
     true
@@ -33,8 +41,6 @@ function createCard(product: Product): HTMLDivElement {
   img.src = product.mainPhoto;
   img.alt = product.title;
 
-  (card.querySelector(".card-title") as HTMLElement).textContent =
-    product.title;
   (card.querySelector(".card-text") as HTMLElement).textContent =
     product.description;
   (card.querySelector(".badge") as HTMLElement).textContent =
@@ -81,11 +87,9 @@ function createCard(product: Product): HTMLDivElement {
     try {
       await productsService.delete(product.id);
       card.remove();
-      products = products.filter(p => p.id !== product.id);
     } catch (error) {
       alert(
-        "Error al borrar el producto: " +
-          (error instanceof Error ? error.message : String(error))
+        (error as { error?: string }).error ?? "Error al borrar el producto"
       );
     }
   });
@@ -94,7 +98,7 @@ function createCard(product: Product): HTMLDivElement {
 }
 
 function showProducts(productsToShow: Product[]): void {
-  productsContainer.replaceChildren();
+  if (page === 1) productsContainer.replaceChildren();
   productsToShow.forEach(element => {
     productsContainer.append(createCard(element));
   });
@@ -102,12 +106,30 @@ function showProducts(productsToShow: Product[]): void {
 
 async function loadProducts(): Promise<void> {
   try {
-    const resp = await productsService.getAll(1, "", "distance");
-    products = resp.products;
-    showProducts(products);
+    const resp = await productsService.getAll(page, search, sort);
+    showProducts(resp.products);
   } catch {
     alert("no se han cargado los productos");
   }
 }
+
+function showFilterInfo(): void {
+  if (search) {
+    filterInfo.textContent = `Filtrando por "${search}" y ordenando por ${sort}.`;
+  } else {
+    filterInfo.textContent =
+      "Showing all products. Sorted by " +
+      (sort === "distance" ? "distance" : "date");
+  }
+}
+
+searchForm.addEventListener("submit", (event: Event) => {
+  event.preventDefault();
+  search = searchInput.value;
+  page = 1;
+  sort = order.value;
+  showFilterInfo();
+  loadProducts();
+});
 
 loadProducts();
