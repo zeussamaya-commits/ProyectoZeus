@@ -12,9 +12,17 @@ export class ProductsService {
   async getAll(
     page: number,
     search: string,
-    sort: string
+    sort: string,
+    status?: string | null,
+    user?: string | null
   ): Promise<ProductsResponse> {
     const params = new URLSearchParams({ page: String(page), search, sort });
+    if (status) {
+      params.append("status", status);
+    }
+    if (user) {
+      params.append("user", user);
+    }
     return await this.#http.get<ProductsResponse>(
       `${SERVER}/products?${params.toString()}`
     );

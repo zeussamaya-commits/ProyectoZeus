@@ -32,6 +32,12 @@ const order = document.getElementById("order") as HTMLSelectElement;
 
 const filterInfo = document.getElementById("filterInfo") as HTMLDivElement;
 
+const urlParams = new URLSearchParams(location.search);
+const status = urlParams.get("status");
+const user = status ? urlParams.get("user") : null;
+
+const loadMoreBtn = document.getElementById("loadMore") as HTMLButtonElement;
+
 function createCard(product: Product): HTMLDivElement {
   const card = productTemplate.content.firstElementChild?.cloneNode(
     true
@@ -106,8 +112,10 @@ function showProducts(productsToShow: Product[]): void {
 
 async function loadProducts(): Promise<void> {
   try {
-    const resp = await productsService.getAll(page, search, sort);
+    const resp = await productsService.getAll(page, search, sort, status, user);
+
     showProducts(resp.products);
+    loadMoreBtn.classList.toggle("d-none", page >= resp.total_pages);
   } catch {
     alert("no se han cargado los productos");
   }
@@ -117,9 +125,7 @@ function showFilterInfo(): void {
   if (search) {
     filterInfo.textContent = `Filtrando por "${search}" y ordenando por ${sort}.`;
   } else {
-    filterInfo.textContent =
-      "Showing all products. Sorted by " +
-      (sort === "distance" ? "distance" : "date");
+    filterInfo.textContent = `Showing all products. Sorted by ${sort}.`;
   }
 }
 
@@ -129,6 +135,11 @@ searchForm.addEventListener("submit", (event: Event) => {
   page = 1;
   sort = order.value;
   showFilterInfo();
+  loadProducts();
+});
+
+loadMoreBtn.addEventListener("click", () => {
+  page++;
   loadProducts();
 });
 
