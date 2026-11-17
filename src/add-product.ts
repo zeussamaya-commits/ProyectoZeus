@@ -71,9 +71,11 @@ newProductForm.addEventListener("submit", async event => {
     await productsService.post(product);
     location.assign("index.html");
   } catch (error) {
+    const message = (error as { message?: string | string[] }).message;
     alert(
-      "Error al guardar el producto: " +
-        (error instanceof Error ? error.message : String(error))
+      Array.isArray(message)
+        ? message.join("\n")
+        : (message ?? "Error al guardar el producto")
     );
   }
 });

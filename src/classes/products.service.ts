@@ -39,4 +39,11 @@ export class ProductsService {
   async delete(id: number): Promise<void> {
     await this.#http.delete(`${SERVER}/products/${id}`);
   }
+
+  async getId(id: number): Promise<Product> {
+    const resp = await this.#http.get<SingleProductResponse>(
+      `${SERVER}/products/${id}`
+    );
+    return resp.product;
+  }
 }
