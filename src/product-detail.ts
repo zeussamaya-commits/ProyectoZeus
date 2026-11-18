@@ -1,5 +1,6 @@
 import { ProductsService } from "./classes/products.service.ts";
 import type { Product } from "./interfaces/product.ts";
+import { MapService } from "./classes/map-service.ts";
 
 const id = new URLSearchParams(location.search).get("id");
 const productsService = new ProductsService();
@@ -19,6 +20,7 @@ const dateFormat = new Intl.DateTimeFormat("es-ES", {
 
 const ownerPhoto = document.getElementById("ownerPhoto") as HTMLImageElement;
 const ownerName = document.getElementById("ownerName") as HTMLSpanElement;
+const bookmarkBtn = document.getElementById("bookmarkBtn") as HTMLButtonElement;
 
 if (!id) {
   alert("Producto no encontrado");
@@ -26,7 +28,10 @@ if (!id) {
 } else {
   productsService
     .getId(Number(id))
-    .then(showProduct)
+    .then(product => {
+      showProduct(product);
+      showMap(product);
+    })
     .catch(() => {
       alert("No se ha podido cargar el producto");
       location.assign("index.html");
@@ -61,4 +66,28 @@ function showProduct(product: Product): void {
   };
   ownerPhoto.onclick = goToProfile;
   ownerName.onclick = goToProfile;
+
+  bookmarkBtn.classList.toggle("active", product.bookmarked);
+  bookmarkBtn.onclick = async (): Promise<void> => {
+    try {
+      if (product.bookmarked) {
+        await productsService.removeBookmark(product.id);
+      } else {
+        await productsService.addBookmark(product.id);
+      }
+      product.bookmarked = !product.bookmarked;
+      bookmarkBtn.classList.toggle("active", product.bookmarked);
+    } catch {
+      alert("No se ha podido actualizar favoritos");
+    }
+  };
+}
+
+function showMap(product: Product): void {
+  const coords = {
+    latitude: product.owner.lat,
+    longitude: product.owner.lng,
+  };
+  const mapService = new MapService(coords, "map", 14);
+  mapService.createMarker(coords);
 }

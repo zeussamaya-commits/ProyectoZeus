@@ -46,4 +46,12 @@ export class ProductsService {
     );
     return resp.product;
   }
+
+  async addBookmark(id: number): Promise<void> {
+    return this.#http.post<void, void>(`${SERVER}/products/${id}/bookmarks`);
+  }
+
+  async removeBookmark(id: number): Promise<void> {
+    return this.#http.delete(`${SERVER}/products/${id}/bookmarks`);
+  }
 }
