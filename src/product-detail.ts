@@ -21,6 +21,7 @@ const dateFormat = new Intl.DateTimeFormat("es-ES", {
 const ownerPhoto = document.getElementById("ownerPhoto") as HTMLImageElement;
 const ownerName = document.getElementById("ownerName") as HTMLSpanElement;
 const bookmarkBtn = document.getElementById("bookmarkBtn") as HTMLButtonElement;
+const deleteBtn = document.getElementById("deleteProduct") as HTMLButtonElement;
 
 if (!id) {
   alert("Producto no encontrado");
@@ -79,6 +80,20 @@ function showProduct(product: Product): void {
       bookmarkBtn.classList.toggle("active", product.bookmarked);
     } catch {
       alert("No se ha podido actualizar favoritos");
+    }
+  };
+
+  deleteBtn.classList.toggle("d-none", !product.mine);
+  deleteBtn.onclick = async (): Promise<void> => {
+    if (!confirm(`¿Seguro que quieres borrar "${product.title}"?`)) {
+      return;
+    }
+
+    try {
+      await productsService.delete(product.id);
+      location.assign("index.html");
+    } catch {
+      alert("No se ha podido borrar el producto");
     }
   };
 }
