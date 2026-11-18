@@ -3,10 +3,12 @@ import type { Product } from "./interfaces/product.ts";
 import { MapService } from "./classes/map-service.ts";
 import { type User } from "./interfaces/user.ts";
 import { UserService } from "./classes/user.service.ts";
+import { RatingsService } from "./classes/ratings.service.ts";
 
 const id = new URLSearchParams(location.search).get("id");
 const productsService = new ProductsService();
 const userService = new UserService();
+const ratingsService = new RatingsService();
 let myUserId = 0;
 
 const distanceFormat = new Intl.NumberFormat("es-ES", {
@@ -46,6 +48,16 @@ const pendingRatingCard = document.getElementById(
 const ratingFormContainer = document.getElementById(
   "ratingFormContainer"
 ) as HTMLDivElement;
+const ratingForm = document.getElementById("ratingForm") as HTMLFormElement;
+const ratingComment = document.getElementById(
+  "ratingComment"
+) as HTMLTextAreaElement;
+const rateBtn = document.getElementById(
+  "btnRateTransaction"
+) as HTMLButtonElement;
+const cancelRatingBtn = document.getElementById(
+  "btnCancelRating"
+) as HTMLButtonElement;
 
 if (!id) {
   alert("Producto no encontrado");
@@ -62,6 +74,42 @@ if (!id) {
       location.assign("index.html");
     });
 }
+
+rateBtn.addEventListener("click", (): void => {
+  pendingRatingCard.classList.add("d-none");
+  ratingFormContainer.classList.remove("d-none");
+});
+
+cancelRatingBtn.addEventListener("click", (): void => {
+  ratingForm.reset();
+  ratingFormContainer.classList.add("d-none");
+  pendingRatingCard.classList.remove("d-none");
+});
+
+ratingForm.addEventListener("submit", async (event): Promise<void> => {
+  event.preventDefault();
+  if (!ratingForm.reportValidity()) {
+    return;
+  }
+
+  try {
+    await ratingsService.post({
+      product: Number(id),
+      rating: Number(new FormData(ratingForm).get("ratingScore")),
+      comment: ratingComment.value.trim(),
+    });
+    ratingForm.reset();
+    const updated = await productsService.getId(Number(id));
+    showProduct(updated);
+  } catch (error) {
+    const message = (error as { message?: string | string[] }).message;
+    alert(
+      Array.isArray(message)
+        ? message.join("\n")
+        : (message ?? "No se ha podido enviar la valoración")
+    );
+  }
+});
 
 function showProduct(product: Product): void {
   (document.getElementById("title") as HTMLHeadingElement).textContent =
