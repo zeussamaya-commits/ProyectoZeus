@@ -24,6 +24,14 @@ const bookmarkBtn = document.getElementById("bookmarkBtn") as HTMLButtonElement;
 const deleteBtn = document.getElementById("deleteProduct") as HTMLButtonElement;
 const buyBtn = document.getElementById("buyProduct") as HTMLButtonElement;
 
+const transactionCard = document.getElementById(
+  "transactionCard"
+) as HTMLDivElement;
+const dateTransaction = document.getElementById(
+  "dateTransaction"
+) as HTMLSpanElement;
+const statusBadge = document.getElementById("status") as HTMLSpanElement;
+
 if (!id) {
   alert("Producto no encontrado");
   location.assign("index.html");
@@ -112,6 +120,15 @@ function showProduct(product: Product): void {
       alert((error as { error?: string }).error ?? "No se ha podido comprar");
     }
   };
+
+  transactionCard.classList.toggle("d-none", product.status !== 3);
+  statusBadge.classList.toggle("d-none", product.status !== 3);
+
+  if (product.rating?.dateTransaction) {
+    dateTransaction.textContent = dateFormat.format(
+      new Date(product.rating.dateTransaction)
+    );
+  }
 }
 
 function showMap(product: Product): void {
