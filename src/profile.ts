@@ -5,6 +5,7 @@ const userService = new UserService();
 const id = new URLSearchParams(location.search).get("id");
 
 const photo = document.getElementById("photo") as HTMLImageElement;
+const photoInput = document.getElementById("photoInput") as HTMLInputElement;
 const photoLabel = photo.nextElementSibling as HTMLLabelElement;
 const nameTitle = document.getElementById("name") as HTMLHeadingElement;
 const emailTitle = document.querySelector("#email small") as HTMLElement;
@@ -46,7 +47,6 @@ const cancelEditPasswordBtn = document.getElementById(
 
 const passwordInput = document.getElementById("password") as HTMLInputElement;
 const password2Input = document.getElementById("password2") as HTMLInputElement;
-
 
 userService
   .getProfile(id ? Number(id) : undefined)
@@ -139,4 +139,21 @@ passwordForm.addEventListener("submit", async (event): Promise<void> => {
   }
 });
 
+photoInput.addEventListener("change", () => {
+  const file = photoInput.files?.[0];
+  if (!file) {
+    return;
+  }
 
+  const reader = new FileReader();
+  reader.addEventListener("load", async (): Promise<void> => {
+    try {
+      const photoUrl = await userService.savePhoto(reader.result as string);
+      photo.src = photoUrl;
+      alert("Foto actualizada correctamente");
+    } catch {
+      alert("No se ha podido actualizar la foto");
+    }
+  });
+  reader.readAsDataURL(file);
+});
