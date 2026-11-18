@@ -28,6 +28,22 @@ const profileForm = document.querySelector(
 const nameInput = profileForm.querySelector("#name") as HTMLInputElement;
 const emailInput = profileForm.querySelector("#email") as HTMLInputElement;
 
+const profileFormContainer = document.getElementById(
+  "profileForm"
+) as HTMLDivElement;
+const passwordFormContainer = document.getElementById(
+  "passwordForm"
+) as HTMLDivElement;
+const passwordForm = document.querySelector(
+  "#passwordForm form"
+) as HTMLFormElement;
+const cancelEditProfileBtn = document.getElementById(
+  "cancelEditProfile"
+) as HTMLButtonElement;
+const cancelEditPasswordBtn = document.getElementById(
+  "cancelEditPassword"
+) as HTMLButtonElement;
+
 userService
   .getProfile(id ? Number(id) : undefined)
   .then(showUser)
@@ -50,3 +66,49 @@ function showUser(user: User): void {
   linkBought.href = `index.html?user=${user.id}&status=bought`;
   linkFavorites.href = `index.html?user=${user.id}&status=bookmarks`;
 }
+
+function toggleEditMode(
+  button: HTMLButtonElement,
+  formContainer: HTMLDivElement,
+  editing: boolean
+): void {
+  button.classList.toggle("d-none", editing);
+  formContainer.classList.toggle("d-none", !editing);
+}
+
+editProfileBtn.addEventListener("click", () =>
+  toggleEditMode(editProfileBtn, profileFormContainer, true)
+);
+cancelEditProfileBtn.addEventListener("click", () =>
+  toggleEditMode(editProfileBtn, profileFormContainer, false)
+);
+
+editPasswordBtn.addEventListener("click", () =>
+  toggleEditMode(editPasswordBtn, passwordFormContainer, true)
+);
+cancelEditPasswordBtn.addEventListener("click", () => {
+  passwordForm.reset();
+  toggleEditMode(editPasswordBtn, passwordFormContainer, false);
+});
+
+profileForm.addEventListener("submit", async (event): Promise<void> => {
+  event.preventDefault();
+  const name = nameInput.value.trim();
+  const email = emailInput.value.trim();
+
+  try {
+    await userService.saveProfile(name, email);
+    nameTitle.textContent = name;
+    emailTitle.textContent = email;
+    toggleEditMode(editProfileBtn, profileFormContainer, false);
+    alert("Perfil actualizado correctamente");
+  } catch (error) {
+    const message = (error as { message?: string | string[] }).message;
+    alert(
+      Array.isArray(message)
+        ? message.join("\n")
+        : (message ?? "No se ha podido actualizar el perfil")
+    );
+  }
+});
+
