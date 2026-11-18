@@ -22,6 +22,7 @@ const ownerPhoto = document.getElementById("ownerPhoto") as HTMLImageElement;
 const ownerName = document.getElementById("ownerName") as HTMLSpanElement;
 const bookmarkBtn = document.getElementById("bookmarkBtn") as HTMLButtonElement;
 const deleteBtn = document.getElementById("deleteProduct") as HTMLButtonElement;
+const buyBtn = document.getElementById("buyProduct") as HTMLButtonElement;
 
 if (!id) {
   alert("Producto no encontrado");
@@ -94,6 +95,21 @@ function showProduct(product: Product): void {
       location.assign("index.html");
     } catch {
       alert("No se ha podido borrar el producto");
+    }
+  };
+
+  buyBtn.classList.toggle("d-none", !(product.status === 1 && !product.mine));
+  buyBtn.onclick = async (): Promise<void> => {
+    if (!confirm(`¿Quieres comprar "${product.title}"?`)) {
+      return;
+    }
+
+    try {
+      await productsService.buy(product.id);
+      const updated = await productsService.getId(product.id);
+      showProduct(updated);
+    } catch (error) {
+      alert((error as { error?: string }).error ?? "No se ha podido comprar");
     }
   };
 }

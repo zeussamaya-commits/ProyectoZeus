@@ -54,4 +54,8 @@ export class ProductsService {
   async removeBookmark(id: number): Promise<void> {
     return this.#http.delete(`${SERVER}/products/${id}/bookmarks`);
   }
+
+  async buy(id: number): Promise<void> {
+    await this.#http.put<void, void>(`${SERVER}/products/${id}/buy`);
+  }
 }
