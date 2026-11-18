@@ -2,9 +2,12 @@ import { ProductsService } from "./classes/products.service.ts";
 import type { Product } from "./interfaces/product.ts";
 import { MapService } from "./classes/map-service.ts";
 import { type User } from "./interfaces/user.ts";
+import { UserService } from "./classes/user.service.ts";
 
 const id = new URLSearchParams(location.search).get("id");
 const productsService = new ProductsService();
+const userService = new UserService();
+let myUserId = 0;
 
 const distanceFormat = new Intl.NumberFormat("es-ES", {
   minimumFractionDigits: 2,
@@ -37,14 +40,20 @@ const ratingTemplate = document.getElementById(
   "ratingTemplate"
 ) as HTMLTemplateElement;
 const ratingsRow = document.getElementById("ratingsRow") as HTMLDivElement;
+const pendingRatingCard = document.getElementById(
+  "pendingRatingCard"
+) as HTMLDivElement;
+const ratingFormContainer = document.getElementById(
+  "ratingFormContainer"
+) as HTMLDivElement;
 
 if (!id) {
   alert("Producto no encontrado");
   location.assign("index.html");
 } else {
-  productsService
-    .getId(Number(id))
-    .then(product => {
+  Promise.all([productsService.getId(Number(id)), userService.getProfile()])
+    .then(([product, me]) => {
+      myUserId = me.id;
       showProduct(product);
       showMap(product);
     })
@@ -159,6 +168,13 @@ function showProduct(product: Product): void {
       )
     );
   }
+
+  const isBuyer = product.soldTo?.id === myUserId;
+  const pendingRating =
+    (product.mine && !rating?.sellerRating) ||
+    (isBuyer && !rating?.buyerRating);
+  pendingRatingCard.classList.toggle("d-none", !pendingRating);
+  ratingFormContainer.classList.add("d-none");
 }
 
 function showMap(product: Product): void {
