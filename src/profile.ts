@@ -15,6 +15,13 @@ const editPasswordBtn = document.getElementById(
   "editPassword"
 ) as HTMLButtonElement;
 
+const linkSelling = document.getElementById("linkSelling") as HTMLAnchorElement;
+const linkSold = document.getElementById("linkSold") as HTMLAnchorElement;
+const linkBought = document.getElementById("linkBought") as HTMLAnchorElement;
+const linkFavorites = document.getElementById(
+  "linkFavorites"
+) as HTMLAnchorElement;
+
 const profileForm = document.querySelector(
   "#profileForm form"
 ) as HTMLFormElement;
@@ -37,4 +44,9 @@ function showUser(user: User): void {
   editProfileBtn.classList.toggle("d-none", !user.me);
   editPasswordBtn.classList.toggle("d-none", !user.me);
   photoLabel.classList.toggle("d-none", !user.me);
+
+  linkSelling.href = `index.html?user=${user.id}&status=selling`;
+  linkSold.href = `index.html?user=${user.id}&status=sold`;
+  linkBought.href = `index.html?user=${user.id}&status=bought`;
+  linkFavorites.href = `index.html?user=${user.id}&status=bookmarks`;
 }
