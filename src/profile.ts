@@ -44,6 +44,10 @@ const cancelEditPasswordBtn = document.getElementById(
   "cancelEditPassword"
 ) as HTMLButtonElement;
 
+const passwordInput = document.getElementById("password") as HTMLInputElement;
+const password2Input = document.getElementById("password2") as HTMLInputElement;
+
+
 userService
   .getProfile(id ? Number(id) : undefined)
   .then(showUser)
@@ -111,4 +115,28 @@ profileForm.addEventListener("submit", async (event): Promise<void> => {
     );
   }
 });
+
+passwordForm.addEventListener("submit", async (event): Promise<void> => {
+  event.preventDefault();
+
+  if (passwordInput.value !== password2Input.value) {
+    alert("Las contraseñas no coinciden");
+    return;
+  }
+
+  try {
+    await userService.savePassword(passwordInput.value);
+    passwordForm.reset();
+    toggleEditMode(editPasswordBtn, passwordFormContainer, false);
+    alert("Contraseña actualizada correctamente");
+  } catch (error) {
+    const message = (error as { message?: string | string[] }).message;
+    alert(
+      Array.isArray(message)
+        ? message.join(" ")
+        : (message ?? "No se ha podido actualizar la contraseña")
+    );
+  }
+});
+
 
