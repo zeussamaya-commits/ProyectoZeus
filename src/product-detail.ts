@@ -1,6 +1,7 @@
 import { ProductsService } from "./classes/products.service.ts";
 import type { Product } from "./interfaces/product.ts";
 import { MapService } from "./classes/map-service.ts";
+import { type User } from "./interfaces/user.ts";
 
 const id = new URLSearchParams(location.search).get("id");
 const productsService = new ProductsService();
@@ -31,6 +32,11 @@ const dateTransaction = document.getElementById(
   "dateTransaction"
 ) as HTMLSpanElement;
 const statusBadge = document.getElementById("status") as HTMLSpanElement;
+
+const ratingTemplate = document.getElementById(
+  "ratingTemplate"
+) as HTMLTemplateElement;
+const ratingsRow = document.getElementById("ratingsRow") as HTMLDivElement;
 
 if (!id) {
   alert("Producto no encontrado");
@@ -129,6 +135,30 @@ function showProduct(product: Product): void {
       new Date(product.rating.dateTransaction)
     );
   }
+
+  ratingsRow.querySelectorAll(".rating-card").forEach(card => card.remove());
+
+  const rating = product.rating;
+  if (rating?.sellerRating && rating.sellerComment) {
+    ratingsRow.prepend(
+      createRatingCard(
+        "Seller",
+        product.owner,
+        rating.sellerRating,
+        rating.sellerComment
+      )
+    );
+  }
+  if (product.soldTo && rating?.buyerRating && rating.buyerComment) {
+    ratingsRow.prepend(
+      createRatingCard(
+        "Buyer",
+        product.soldTo,
+        rating.buyerRating,
+        rating.buyerComment
+      )
+    );
+  }
 }
 
 function showMap(product: Product): void {
@@ -138,4 +168,30 @@ function showMap(product: Product): void {
   };
   const mapService = new MapService(coords, "map", 14);
   mapService.createMarker(coords);
+}
+
+function createRatingCard(
+  role: string,
+  user: User,
+  rating: number,
+  comment: string
+): HTMLDivElement {
+  const card = ratingTemplate.content.firstElementChild?.cloneNode(
+    true
+  ) as HTMLDivElement;
+
+  const photo = card.querySelector(".rating-photo") as HTMLImageElement;
+  photo.src = user.photo;
+  photo.alt = user.name;
+  (card.querySelector(".rating-name") as HTMLElement).textContent =
+    `${role}: ${user.name}`;
+  (card.querySelector(".rating-email") as HTMLElement).textContent = user.email;
+  (card.querySelector(".rating-stars") as HTMLElement).textContent =
+    "★".repeat(rating) + "☆".repeat(5 - rating);
+  (card.querySelector(".rating-score") as HTMLElement).textContent =
+    `${rating} / 5`;
+  (card.querySelector(".rating-comment") as HTMLElement).textContent =
+    `"${comment}"`;
+
+  return card;
 }
