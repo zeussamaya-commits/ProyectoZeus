@@ -13,6 +13,14 @@ const lngInput = document.getElementById("lng") as HTMLInputElement;
 const photoInput = document.getElementById("photo") as HTMLInputElement;
 const imgPreview = document.getElementById("imgPreview") as HTMLImageElement;
 const authService = new AuthService();
+
+authService
+  .checkToken()
+  .then(() => location.assign("index.html"))
+  .catch(() => {
+    // No hay sesión: el usuario se queda en esta página
+  });
+
 MyGeolocation.getLocation()
   .then(cords => {
     latInput.value = cords.latitude.toString();

@@ -1,5 +1,8 @@
 import { ProductsService } from "./classes/products.service.ts";
 import { type Product } from "./interfaces/product.ts";
+import { initAuthenticatedPage } from "./utils.ts";
+
+initAuthenticatedPage();
 
 const productsService = new ProductsService();
 const productsContainer = document.getElementById(

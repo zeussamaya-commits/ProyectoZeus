@@ -21,4 +21,10 @@ export class AuthService {
       userInfo
     );
   }
+  async checkToken(): Promise<void> {
+    await this.#http.get<void>(`${SERVER}/auth/validate`);
+  }
+  logout(): void {
+    localStorage.removeItem("token");
+  }
 }

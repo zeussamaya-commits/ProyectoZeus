@@ -4,6 +4,9 @@ import { MapService } from "./classes/map-service.ts";
 import { type User } from "./interfaces/user.ts";
 import { UserService } from "./classes/user.service.ts";
 import { RatingsService } from "./classes/ratings.service.ts";
+import { initAuthenticatedPage } from "./utils.ts";
+
+initAuthenticatedPage();
 
 const id = new URLSearchParams(location.search).get("id");
 const productsService = new ProductsService();

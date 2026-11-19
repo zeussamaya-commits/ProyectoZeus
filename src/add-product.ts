@@ -1,6 +1,9 @@
 import { CategoriesService } from "./classes/categories.service.ts";
 import { ProductsService } from "./classes/products.service.ts";
 import type { ProductInsert } from "./interfaces/product.ts";
+import { initAuthenticatedPage } from "./utils.ts";
+
+initAuthenticatedPage();
 
 const categoriesService = new CategoriesService();
 const productsService = new ProductsService();
